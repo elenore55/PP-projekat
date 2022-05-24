@@ -1,6 +1,9 @@
 %{
   #include <stdio.h>
+  #include <stdlib.h>
   #include "defs.h"
+  #include "symtab.h"
+  #include "ast_node.h"
 
   int yyparse(void);
   int yylex(void);
