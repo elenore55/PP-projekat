@@ -68,13 +68,14 @@
   #include <stdlib.h>
   #include "defs.h"
   #include "symtab.h"
+  #include "ast_node.h"
 
   int yyparse(void);
   int yylex(void);
   int yyerror(char *s);
   extern int yylineno;
 
-#line 78 "syntax.tab.c" /* yacc.c:339  */
+#line 79 "syntax.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -144,7 +145,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 148 "syntax.tab.c" /* yacc.c:358  */
+#line 149 "syntax.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -443,10 +444,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    35,    35,    39,    40,    44,    48,    51,    53,    57,
-      60,    62,    66,    69,    71,    75,    76,    77,    78,    82,
-      86,    90,    91,    95,    96,    97,    98,   102,   103,   107,
-     110,   112,   116,   117,   121,   125,   129
+       0,    36,    36,    40,    41,    45,    49,    52,    54,    58,
+      61,    63,    67,    70,    72,    76,    77,    78,    79,    83,
+      87,    91,    92,    96,    97,    98,    99,   103,   104,   108,
+     111,   113,   117,   118,   122,   126,   130
 };
 #endif
 
@@ -1257,7 +1258,7 @@ yyreduce:
   switch (yyn)
     {
       
-#line 1261 "syntax.tab.c" /* yacc.c:1646  */
+#line 1262 "syntax.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1485,7 +1486,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 132 "syntax.y" /* yacc.c:1906  */
+#line 133 "syntax.y" /* yacc.c:1906  */
 
 
 int yyerror(char *s) {
