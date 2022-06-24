@@ -518,10 +518,11 @@ char *yytext;
 #line 1 "syntax.l"
 #line 3 "syntax.l"
   #include <string.h>
+  #include "ast_node.h"
   #include "syntax.tab.h"
   #include "defs.h"
-#line 524 "lex.yy.c"
 #line 525 "lex.yy.c"
+#line 526 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -738,10 +739,10 @@ YY_DECL
 		}
 
 	{
-#line 8 "syntax.l"
+#line 9 "syntax.l"
 
 
-#line 745 "lex.yy.c"
+#line 746 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -811,136 +812,139 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 10 "syntax.l"
+#line 11 "syntax.l"
 { /* skip */ }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 12 "syntax.l"
-{ return _TYPE; }
+#line 13 "syntax.l"
+{ yylval.i = INT;  return _TYPE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 13 "syntax.l"
-{ return _TYPE; }
+#line 14 "syntax.l"
+{ yylval.i = UINT; return _TYPE; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 14 "syntax.l"
+#line 15 "syntax.l"
 { return _IF; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 15 "syntax.l"
+#line 16 "syntax.l"
 { return _ELSE; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 16 "syntax.l"
+#line 17 "syntax.l"
 { return _RETURN; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 18 "syntax.l"
+#line 19 "syntax.l"
 { return _LPAREN; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 19 "syntax.l"
+#line 20 "syntax.l"
 { return _RPAREN; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 20 "syntax.l"
+#line 21 "syntax.l"
 { return _LBRACKET; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 21 "syntax.l"
+#line 22 "syntax.l"
 { return _RBRACKET; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 22 "syntax.l"
+#line 23 "syntax.l"
 { return _SEMICOLON; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 23 "syntax.l"
+#line 24 "syntax.l"
 { return _ASSIGN; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 25 "syntax.l"
-{ return _AROP; }
+#line 26 "syntax.l"
+{ yylval.i = ADD; return _AROP; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 26 "syntax.l"
-{ return _AROP; }
+#line 27 "syntax.l"
+{ yylval.i = SUB; return _AROP; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 28 "syntax.l"
-{ return _RELOP; }
+#line 29 "syntax.l"
+{ yylval.i = LT; return _RELOP; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 29 "syntax.l"
-{ return _RELOP; }
+#line 30 "syntax.l"
+{ yylval.i = GT; return _RELOP; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 30 "syntax.l"
-{ return _RELOP; }
+#line 31 "syntax.l"
+{ yylval.i = LE; return _RELOP; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 31 "syntax.l"
-{ return _RELOP; }
+#line 32 "syntax.l"
+{ yylval.i = GE; return _RELOP; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 32 "syntax.l"
-{ return _RELOP; }
+#line 33 "syntax.l"
+{ yylval.i = EQ; return _RELOP; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 33 "syntax.l"
-{ return _RELOP; }
+#line 34 "syntax.l"
+{ yylval.i = NE; return _RELOP; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 35 "syntax.l"
-{ return _ID; }
+#line 36 "syntax.l"
+{ yylval.s = strdup(yytext); 
+                       return _ID; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 36 "syntax.l"
-{ return _INT_NUMBER;}
+#line 38 "syntax.l"
+{ yylval.s = strdup(yytext); 
+                       return _INT_NUMBER;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 37 "syntax.l"
-{ return _UINT_NUMBER;}
+#line 40 "syntax.l"
+{ yylval.s = strdup(yytext); 
+                       yylval.s[yyleng-1] = 0;
+                       return _UINT_NUMBER;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 39 "syntax.l"
+#line 44 "syntax.l"
 { /* skip */ }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 40 "syntax.l"
-{ printf("line %d: LEXICAL ERROR on char %c\n", 
-                              yylineno, *yytext);}
+#line 45 "syntax.l"
+{ printf("line %d: LEXICAL ERROR on char %c\n", yylineno, *yytext);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 42 "syntax.l"
+#line 46 "syntax.l"
 ECHO;
 	YY_BREAK
-#line 944 "lex.yy.c"
+#line 948 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1957,6 +1961,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 42 "syntax.l"
+#line 46 "syntax.l"
 
 

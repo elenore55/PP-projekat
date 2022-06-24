@@ -1,9 +1,10 @@
 %{
   #include <stdio.h>
   #include <stdlib.h>
+  #include "ast_node.h"
   #include "defs.h"
   #include "symtab.h"
-  #include "ast_node.h"
+
 
   int yyparse(void);
   int yylex(void);
@@ -11,21 +12,29 @@
   extern int yylineno;
 %}
 
-%token _TYPE
+%union {
+  int i;
+  char* s;
+  AST_NODE* n;
+}
+
+%token <i> _TYPE
 %token _IF
 %token _ELSE
 %token _RETURN
-%token _ID
-%token _INT_NUMBER
-%token _UINT_NUMBER
+%token <s> _ID
+%token <s> _INT_NUMBER
+%token <s> _UINT_NUMBER
 %token _LPAREN
 %token _RPAREN
 %token _LBRACKET
 %token _RBRACKET
 %token _ASSIGN
 %token _SEMICOLON
-%token _AROP
-%token _RELOP
+%token <i> _AROP
+%token <i> _RELOP
+
+%type <n> literal variable variable_list parameter
 
 %nonassoc ONLY_IF
 %nonassoc _ELSE
@@ -42,16 +51,22 @@ function_list
   ;
 
 function
-  : type _ID _LPAREN parameter _RPAREN body
-  ;
-
-type
-  : _TYPE
+  : _TYPE _ID _LPAREN parameter _RPAREN body
   ;
 
 parameter
   : /* empty */
-  | type _ID
+	{
+		$$ = NULL;
+	}
+  | _TYPE _ID
+	{
+		AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
+		node -> name = $2;
+		node -> type = $1;
+		node -> kind = PAR;
+		$$ = node;
+	}
   ;
 
 body
@@ -59,12 +74,31 @@ body
   ;
 
 variable_list
-  : /* empty */
+  : /* empty Skontati sta ovdje za cvor*/
+	{
+		$$ = NULL;
+	}
   | variable_list variable
+	{
+		AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
+		AST_NODE* child1 = $1;
+		AST_NODE* child2 = $2;
+		node -> children[0] = $1;
+		node -> children[1] = $2;
+		node -> children_cnt = 2;
+		$$ = node;
+	}
   ;
 
 variable
-  : type _ID _SEMICOLON
+  : _TYPE _ID _SEMICOLON
+	{
+		AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
+		node -> name = $2;
+		node -> type = $1;
+		node -> kind = VAR;
+		$$ = node;
+	}
   ;
 
 statement_list
@@ -101,7 +135,21 @@ exp
 
 literal
   : _INT_NUMBER
+    {
+		AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
+		node -> name = $1;
+		node -> type = UINT;
+		node -> kind = LIT;
+		$$ = node;
+    }
   | _UINT_NUMBER
+	{
+		AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
+		node -> name = $1;
+		node -> type = UINT;
+		node -> kind = LIT;
+		$$ = node;
+    }
   ;
 
 function_call
