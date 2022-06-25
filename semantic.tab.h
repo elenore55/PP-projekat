@@ -40,7 +40,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 25 "semantic.y" /* yacc.c:1909  */
+#line 26 "semantic.y" /* yacc.c:1909  */
 
   typedef struct ast_node {
     char* name;
@@ -96,7 +96,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 50 "semantic.y" /* yacc.c:1909  */
+#line 51 "semantic.y" /* yacc.c:1909  */
 
   int i;
   char *s;

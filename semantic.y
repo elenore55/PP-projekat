@@ -1,6 +1,7 @@
 %{
   #include <stdio.h>
   #include <stdlib.h>
+  #include <string.h>
   #include "defs.h"
   #include "symtab.h"
 
@@ -15,7 +16,7 @@
   int warning_count = 0;
   int var_num = 0;
   int func_cnt = -1;
-  int fcall_idx = -1;
+  int main_found = FALSE;
   char* func_name;
 
   char* arops_str[] = { "+", "-", "*", "/" };
@@ -99,7 +100,7 @@ function_list
 function
   : _TYPE _ID _LPAREN parameter _RPAREN body
     {
-      AST_NODE* node = build_node($2, $1, FUN, 3);      
+      AST_NODE* node = build_node($2, $1, FUN, 3);   
       node -> children[0] = $4;
       node -> children[1] = $6 -> children[0];
       node -> children[2] = $6 -> children[1];
@@ -388,6 +389,7 @@ void func_declaration(AST_NODE* node) {
     err("Function %s redeclared!", node -> name);
   AST_NODE* param = (node -> children)[0];
   func_name = node -> name;
+  if (strcmp(func_name, "main") == 0) main_found = TRUE;
   if (param == NULL) {
     insert_symbol(node -> name, FUN, node -> type, 0, NO_ATR);
   } else {
@@ -489,6 +491,8 @@ int main() {
 
   print_tree();
   do_semantic_analysis(root);
+  if (!main_found)
+    err("No main fuction!");
 
   clear_symtab();
   
