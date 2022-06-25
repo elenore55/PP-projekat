@@ -30,8 +30,8 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_SYNTAX_TAB_H_INCLUDED
-# define YY_YY_SYNTAX_TAB_H_INCLUDED
+#ifndef YY_YY_SEMANTIC_TAB_H_INCLUDED
+# define YY_YY_SEMANTIC_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -39,6 +39,18 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 21 "semantic.y" /* yacc.c:1909  */
+
+  typedef struct ast_node {
+    char* name;
+    unsigned type;
+    unsigned kind;
+    struct ast_node* children[256];
+    int children_cnt;
+  } AST_NODE;
+
+#line 54 "semantic.tab.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -69,13 +81,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 15 "syntax.y" /* yacc.c:1909  */
+#line 31 "semantic.y" /* yacc.c:1909  */
 
   int i;
-  char* s;
+  char *s;
   AST_NODE* n;
 
-#line 79 "syntax.tab.h" /* yacc.c:1909  */
+#line 91 "semantic.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -88,4 +100,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_SYNTAX_TAB_H_INCLUDED  */
+#endif /* !YY_YY_SEMANTIC_TAB_H_INCLUDED  */

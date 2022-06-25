@@ -1,9 +1,9 @@
 %option noyywrap yylineno
+
 %{
-  #include <string.h>
-  #include "ast_node.h"
-  #include "syntax.tab.h"
-  #include "defs.h"
+   #include <string.h>
+   #include "semantic.tab.h"
+   #include "defs.h"
 %}
 
 %%
