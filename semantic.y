@@ -16,6 +16,9 @@
   int var_num = 0;
   int fun_idx = -1;
   int fcall_idx = -1;
+
+  char* arops_str[] = { "+", "-", "*", "/" };
+  char* relops_str[] = { "<", ">", "<=", ">=", "==", "!=" };
 %}
 
 %code requires {
@@ -27,8 +30,14 @@
     int children_cnt;
   } AST_NODE;
 
+  typedef struct display_node {
+    AST_NODE* node;
+    int depth;
+  } DISPLAY;
+
   AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children_cnt);
   AST_NODE* root;
+  DISPLAY* build_display_node(AST_NODE* node, int depth);
   void print_tree(void);
 }
 
@@ -75,7 +84,7 @@ function_list
   | function_list function
     {
       // TODO: kind
-      AST_NODE* node = build_node("", NO_TYPE, NO_KIND, 2);
+      AST_NODE* node = build_node("functions", NO_TYPE, NO_KIND, 2);
       node -> children[0] = $1;
       node -> children[1] = $2;
       $$ = node;
@@ -122,7 +131,7 @@ variable_list
   | variable_list variable
     {
       // TODO: kind
-      AST_NODE* node = build_node("", NO_TYPE, NO_KIND, 2);
+      AST_NODE* node = build_node("variables", NO_TYPE, NO_KIND, 2);
       node -> children[0] = $1;
       node -> children[1] = $2;
       $$ = node;
@@ -144,7 +153,7 @@ statement_list
   | statement_list statement
     {
       // TODO: kind
-      AST_NODE* node = build_node("", NO_TYPE, NO_KIND, 2);
+      AST_NODE* node = build_node("statements", NO_TYPE, NO_KIND, 2);
       node -> children[0] = $1;
       node -> children[1] = $2;
       $$ = node;
@@ -181,7 +190,7 @@ num_exp
   : exp
   | num_exp _AROP exp
     {
-      AST_NODE* node = build_node("", NO_TYPE, AROP, 2);
+      AST_NODE* node = build_node(arops_str[$2], NO_TYPE, AROP, 2);
       node -> children[0] = $1;
       node -> children[1] = $3;
       $$ = node;
@@ -259,7 +268,7 @@ if_part
 rel_exp
   : num_exp _RELOP num_exp
     {
-      AST_NODE* node = build_node("", NO_TYPE, RELOP, 2);
+      AST_NODE* node = build_node(relops_str[$2], NO_TYPE, RELOP, 2);
       node -> children[0] = $1;
       node -> children[1] = $3;
       $$ = node;
@@ -286,6 +295,13 @@ AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children
   return node;
 }
 
+DISPLAY* build_display_node(AST_NODE* node, int depth) {
+  DISPLAY* display_node = (DISPLAY*) malloc(sizeof(DISPLAY));
+  display_node -> node = node;
+  display_node -> depth = depth;
+  return display_node;
+}
+
 int yyerror(char *s) {
   fprintf(stderr, "\nline %d: ERROR: %s", yylineno, s);
   error_count++;
@@ -297,23 +313,21 @@ void warning(char *s) {
   warning_count++;
 }
 
-void print_tree(void) {
-  AST_NODE* queue[256];
-  queue[0] = root;
-  int size = 1;
-  int counter_pop = 0;
-  int counter_push = 1;
-  while (size > 0) {
-    AST_NODE* current = queue[counter_pop];
-    counter_pop++;
-    size--;
-    if (current == NULL) continue;
-    printf("%s\n", current -> name);
-    for (int i = 0; i < (current -> children_cnt); i++) {
-      queue[counter_push++] = ((current -> children)[i]);
-      size++;
-    }
+void print_node(DISPLAY* display_node) {
+  AST_NODE* node = display_node -> node;
+  int depth = display_node -> depth;
+  if (node == NULL) return;
+  for (int i = 0; i < depth; i++) printf(" ");
+  printf("%s\n", node -> name);
+  for (int i = 0; i < node -> children_cnt; i++)
+  {
+    AST_NODE* next = ((node -> children)[i]);
+    print_node(build_display_node(next, depth + 1));
   }
+}
+
+void print_tree(void) {
+  print_node(build_display_node(root, 0));
 }
 
 int main() {

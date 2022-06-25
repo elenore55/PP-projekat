@@ -40,7 +40,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 21 "semantic.y" /* yacc.c:1909  */
+#line 24 "semantic.y" /* yacc.c:1909  */
 
   typedef struct ast_node {
     char* name;
@@ -50,11 +50,17 @@ extern int yydebug;
     int children_cnt;
   } AST_NODE;
 
+  typedef struct display_node {
+    AST_NODE* node;
+    int depth;
+  } DISPLAY;
+
   AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children_cnt);
   AST_NODE* root;
+  DISPLAY* build_display_node(AST_NODE* node, int depth);
   void print_tree(void);
 
-#line 58 "semantic.tab.h" /* yacc.c:1909  */
+#line 64 "semantic.tab.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -85,13 +91,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 35 "semantic.y" /* yacc.c:1909  */
+#line 44 "semantic.y" /* yacc.c:1909  */
 
   int i;
   char *s;
   AST_NODE* n;
 
-#line 95 "semantic.tab.h" /* yacc.c:1909  */
+#line 101 "semantic.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
