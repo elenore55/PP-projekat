@@ -28,6 +28,8 @@
   } AST_NODE;
 
   AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children_cnt);
+  AST_NODE* root;
+  void print_tree(void);
 }
 
 %union {
@@ -63,6 +65,9 @@
 
 program
   : function_list
+    {
+      root = $1;
+    }
   ;
 
 function_list
@@ -292,11 +297,32 @@ void warning(char *s) {
   warning_count++;
 }
 
+void print_tree(void) {
+  AST_NODE* queue[256];
+  queue[0] = root;
+  int size = 1;
+  int counter_pop = 0;
+  int counter_push = 1;
+  while (size > 0) {
+    AST_NODE* current = queue[counter_pop];
+    counter_pop++;
+    size--;
+    if (current == NULL) continue;
+    printf("%s\n", current -> name);
+    for (int i = 0; i < (current -> children_cnt); i++) {
+      queue[counter_push++] = ((current -> children)[i]);
+      size++;
+    }
+  }
+}
+
 int main() {
   int synerr;
   init_symtab();
 
   synerr = yyparse();
+
+  print_tree();
 
   clear_symtab();
   

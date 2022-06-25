@@ -51,8 +51,10 @@ extern int yydebug;
   } AST_NODE;
 
   AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children_cnt);
+  AST_NODE* root;
+  void print_tree(void);
 
-#line 56 "semantic.tab.h" /* yacc.c:1909  */
+#line 58 "semantic.tab.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -83,13 +85,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 33 "semantic.y" /* yacc.c:1909  */
+#line 35 "semantic.y" /* yacc.c:1909  */
 
   int i;
   char *s;
   AST_NODE* n;
 
-#line 93 "semantic.tab.h" /* yacc.c:1909  */
+#line 95 "semantic.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
