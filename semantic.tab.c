@@ -1921,6 +1921,18 @@ void func_call(AST_NODE* node) {
   int i = lookup_symbol(node -> name, FUN);
   if (i == NO_INDEX) 
     err("Function %s not declared!", node -> name);
+  // TODO: check number of args and their types
+  AST_NODE* arg = (node -> children)[0];
+  int num_params = get_atr1(i);
+  if (num_params == 1) {
+    if (arg == NULL) err("Mismatching number of arguments:!");
+    unsigned param_type = get_atr2(i);
+    unsigned arg_type = get_node_type(arg);
+    if (arg_type != get_type(i))
+      err("Mismatching arg types!");
+  }
+  else if (arg != NULL)
+    err("Mismatching number of arguments:!");
 }
 
 void do_semantic_analysis(AST_NODE* node) {
