@@ -16,6 +16,7 @@
   int var_num = 0;
   int func_cnt = -1;
   int fcall_idx = -1;
+  char* func_name;
 
   char* arops_str[] = { "+", "-", "*", "/" };
   char* relops_str[] = { "<", ">", "<=", ">=", "==", "!=" };
@@ -134,9 +135,19 @@ variable_list
     }
   | variable_list variable
     {
-      AST_NODE* node = build_node("variables", NO_TYPE, VARIABLES, 2);
-      node -> children[0] = $1;
-      node -> children[1] = $2;
+      AST_NODE* node = build_node("variables", NO_TYPE, VARIABLES, 1);
+      AST_NODE* previous = $1;
+      if (previous == NULL) {
+        node -> children[0] = $2;
+      }
+      else {
+        int num_children = (previous -> children_cnt) + 1;
+        node -> children_cnt = num_children;
+        for (int i = 0; i < num_children - 1; i++) {
+          (node -> children)[i] = (previous -> children)[i];
+        }
+        (node -> children)[num_children - 1] = $2;
+      }
       $$ = node;
     }
   ;
@@ -155,9 +166,19 @@ statement_list
     }
   | statement_list statement
     {
-      AST_NODE* node = build_node("statements", NO_TYPE, STATEMENTS, 2);
-      node -> children[0] = $1;
-      node -> children[1] = $2;
+      AST_NODE* node = build_node("statements", NO_TYPE, STATEMENTS, 1);
+      AST_NODE* previous = $1;
+      if (previous == NULL) {
+        node -> children[0] = $2;
+      }
+      else {
+        int num_children = (previous -> children_cnt) + 1;
+        node -> children_cnt = num_children;
+        for (int i = 0; i < num_children - 1; i++) {
+          (node -> children)[i] = (previous -> children)[i];
+        }
+        (node -> children)[num_children - 1] = $2;
+      }
       $$ = node;
     }
   ;
@@ -366,6 +387,7 @@ void func_declaration(AST_NODE* node) {
   if(lookup_symbol(node -> name, FUN) != NO_INDEX) 
     err("Function %s redeclared!", node -> name);
   AST_NODE* param = (node -> children)[0];
+  func_name = node -> name;
   if (param == NULL) {
     insert_symbol(node -> name, FUN, node -> type, 0, NO_ATR);
   } else {
@@ -391,6 +413,26 @@ void arop_relop(AST_NODE* node) {
     err("Mismatching types!");
 }
 
+// TODO: ako nema return a treba
+void return_stm(AST_NODE* node) {
+  int i = lookup_symbol(func_name, FUN);
+  unsigned func_type = get_type(i);
+  unsigned return_type = get_node_type(node);
+  if (func_type != return_type)
+    err("Invalid return value!");
+}
+
+void variable(AST_NODE* node) {
+  if (lookup_symbol(node -> name, VAR|PAR) == NO_INDEX)
+    err("Variable %s not declared!", node -> name);
+}
+
+void func_call(AST_NODE* node) {
+  int i = lookup_symbol(node -> name, FUN);
+  if (i == NO_INDEX) 
+    err("Function %s not declared!", node -> name);
+}
+
 void do_semantic_analysis(AST_NODE* node) {
   if (node == NULL) return;
   switch (node -> kind) {
@@ -409,22 +451,19 @@ void do_semantic_analysis(AST_NODE* node) {
 
     case FUN:
     func_declaration(node);
-      // check if already declared
-      // add to symtable
-      // check return
-    break;
-
-    case LIT:
-      // add to symtable
     break;
 
     case VAR:
-    // check if declared
+    variable(node);
     break;
 
     case FUN_CALL:
-      // check if declared
+    func_call(node);
       // check args
+    break;
+
+    case RETURN:
+    return_stm(node);
     break;
   }
   for (int i = 0; i < node -> children_cnt; i++) {
