@@ -122,7 +122,9 @@ extern int yydebug;
     int children_cnt;
   } AST_NODE;
 
-#line 126 "semantic.tab.c" /* yacc.c:355  */
+  AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children_cnt);
+
+#line 128 "semantic.tab.c" /* yacc.c:355  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -153,13 +155,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 31 "semantic.y" /* yacc.c:355  */
+#line 33 "semantic.y" /* yacc.c:355  */
 
   int i;
   char *s;
   AST_NODE* n;
 
-#line 163 "semantic.tab.c" /* yacc.c:355  */
+#line 165 "semantic.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -176,7 +178,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 180 "semantic.tab.c" /* yacc.c:358  */
+#line 182 "semantic.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -473,12 +475,12 @@ static const yytype_uint8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_uint8 yyrline[] =
+static const yytype_uint16 yyrline[] =
 {
-       0,    62,    62,    66,    67,    78,    97,   100,   111,   116,
-     119,   132,   142,   144,   148,   149,   150,   151,   155,   159,
-     163,   164,   176,   177,   185,   186,   193,   201,   212,   224,
-     227,   231,   232,   236,   240,   244
+       0,    65,    65,    69,    70,    81,    93,    96,   103,   114,
+     117,   128,   136,   139,   150,   151,   152,   153,   157,   164,
+     176,   177,   187,   188,   193,   194,   201,   205,   212,   223,
+     226,   230,   234,   245,   255,   265
 };
 #endif
 
@@ -1289,181 +1291,242 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 68 "semantic.y" /* yacc.c:1646  */
+#line 71 "semantic.y" /* yacc.c:1646  */
     {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> children_cnt = 2;
+      // TODO: kind
+      AST_NODE* node = build_node("", NO_TYPE, NO_KIND, 2);
       node -> children[0] = (yyvsp[-1].n);
       node -> children[1] = (yyvsp[0].n);
       (yyval.n) = node;
     }
-#line 1301 "semantic.tab.c" /* yacc.c:1646  */
+#line 1303 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 79 "semantic.y" /* yacc.c:1646  */
+#line 82 "semantic.y" /* yacc.c:1646  */
     {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> name = (yyvsp[-4].s);
-      node -> type = (yyvsp[-5].i);
-      node -> kind = FUN;
-      node -> children_cnt = 2;
-
-      AST_NODE* node_left = (AST_NODE*) malloc(sizeof(AST_NODE));
-      
-      AST_NODE* node_right = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> children[0] = node_left;
-      node -> children[1] = node_right;
+      AST_NODE* node = build_node((yyvsp[-4].s), (yyvsp[-5].i), FUN, 3);      
+      node -> children[0] = (yyvsp[-2].n);
+      node -> children[1] = (yyvsp[0].n) -> children[0];
+      node -> children[2] = (yyvsp[0].n) -> children[1];
       (yyval.n) = node;
     }
-#line 1320 "semantic.tab.c" /* yacc.c:1646  */
+#line 1315 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 97 "semantic.y" /* yacc.c:1646  */
+#line 93 "semantic.y" /* yacc.c:1646  */
     {
       (yyval.n) = NULL;
     }
-#line 1328 "semantic.tab.c" /* yacc.c:1646  */
+#line 1323 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 101 "semantic.y" /* yacc.c:1646  */
+#line 97 "semantic.y" /* yacc.c:1646  */
     {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> name = (yyvsp[0].s);
-      node -> type = (yyvsp[-1].i);
-      node -> kind = PAR;
-      (yyval.n) = node;
+      (yyval.n) = build_node((yyvsp[0].s), (yyvsp[-1].i), PAR, 0);
     }
-#line 1340 "semantic.tab.c" /* yacc.c:1646  */
+#line 1331 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 8:
+#line 104 "semantic.y" /* yacc.c:1646  */
+    {
+      AST_NODE* node = build_node("", NO_TYPE, NO_KIND, 2);
+      node -> children[0] = (yyvsp[-2].n);
+      node -> children[1] = (yyvsp[-1].n);
+      (yyval.n) = node; 
+    }
+#line 1342 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 116 "semantic.y" /* yacc.c:1646  */
+#line 114 "semantic.y" /* yacc.c:1646  */
     {
       (yyval.n) = NULL;
     }
-#line 1348 "semantic.tab.c" /* yacc.c:1646  */
+#line 1350 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 120 "semantic.y" /* yacc.c:1646  */
+#line 118 "semantic.y" /* yacc.c:1646  */
     {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      AST_NODE* child1 = (yyvsp[-1].n);
-      AST_NODE* child2 = (yyvsp[0].n);
+      // TODO: kind
+      AST_NODE* node = build_node("", NO_TYPE, NO_KIND, 2);
       node -> children[0] = (yyvsp[-1].n);
       node -> children[1] = (yyvsp[0].n);
-      node -> children_cnt = 2;
       (yyval.n) = node;
     }
 #line 1362 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 133 "semantic.y" /* yacc.c:1646  */
+#line 129 "semantic.y" /* yacc.c:1646  */
     {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> name = (yyvsp[-1].s);
-      node -> type = (yyvsp[-2].i);
-      node -> kind = VAR;
+      (yyval.n) = build_node((yyvsp[-1].s), (yyvsp[-2].i), VAR, 0);
+    }
+#line 1370 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 12:
+#line 136 "semantic.y" /* yacc.c:1646  */
+    {
+      (yyval.n) = NULL;
+    }
+#line 1378 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 13:
+#line 140 "semantic.y" /* yacc.c:1646  */
+    {
+      // TODO: kind
+      AST_NODE* node = build_node("", NO_TYPE, NO_KIND, 2);
+      node -> children[0] = (yyvsp[-1].n);
+      node -> children[1] = (yyvsp[0].n);
       (yyval.n) = node;
     }
-#line 1374 "semantic.tab.c" /* yacc.c:1646  */
+#line 1390 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 18:
+#line 158 "semantic.y" /* yacc.c:1646  */
+    {
+      (yyval.n) = (yyvsp[-1].n);
+    }
+#line 1398 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 19:
+#line 165 "semantic.y" /* yacc.c:1646  */
+    {
+      AST_NODE* node = build_node("=", NO_TYPE, ASSIGN, 2);
+      // TODO: type
+      AST_NODE* left = build_node((yyvsp[-3].s), NO_TYPE, VAR|PAR, 0);
+      node -> children[0] = left;
+      node -> children[1] = (yyvsp[-1].n);
+      (yyval.n) = node;
+    }
+#line 1411 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 165 "semantic.y" /* yacc.c:1646  */
+#line 178 "semantic.y" /* yacc.c:1646  */
     {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> kind = AROP;
-      node -> children_cnt = 2;
+      AST_NODE* node = build_node("", NO_TYPE, AROP, 2);
       node -> children[0] = (yyvsp[-2].n);
       node -> children[1] = (yyvsp[0].n);
       (yyval.n) = node;
     }
-#line 1387 "semantic.tab.c" /* yacc.c:1646  */
+#line 1422 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 178 "semantic.y" /* yacc.c:1646  */
+#line 189 "semantic.y" /* yacc.c:1646  */
     {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> name = (yyvsp[0].s);
-      node -> kind = VAR|PAR;
-      // TODO: node -> type = ?
-      (yyval.n) = node;
+      // TODO: type
+      (yyval.n) = build_node((yyvsp[0].s), NO_TYPE, VAR|PAR, 0);
     }
-#line 1399 "semantic.tab.c" /* yacc.c:1646  */
+#line 1431 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 187 "semantic.y" /* yacc.c:1646  */
+#line 195 "semantic.y" /* yacc.c:1646  */
     {
       (yyval.n) = (yyvsp[-1].n);
     }
-#line 1407 "semantic.tab.c" /* yacc.c:1646  */
+#line 1439 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 194 "semantic.y" /* yacc.c:1646  */
+#line 202 "semantic.y" /* yacc.c:1646  */
     {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> name = (yyvsp[0].s);
-      node -> type = UINT;
-      node -> kind = LIT;
-      (yyval.n) = node;
+      (yyval.n) = build_node((yyvsp[0].s), INT, LIT, 0);
     }
-#line 1419 "semantic.tab.c" /* yacc.c:1646  */
+#line 1447 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 202 "semantic.y" /* yacc.c:1646  */
+#line 206 "semantic.y" /* yacc.c:1646  */
     {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> name = (yyvsp[0].s);
-      node -> type = UINT;
-      node -> kind = LIT;
-      (yyval.n) = node;
+      (yyval.n) = build_node((yyvsp[0].s), UINT, LIT, 0);
     }
-#line 1431 "semantic.tab.c" /* yacc.c:1646  */
+#line 1455 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
 #line 213 "semantic.y" /* yacc.c:1646  */
     {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> name = (yyvsp[-3].s);
       // TODO: kind, type
-      node -> children_cnt = 1;
-      node -> children[0] = (yyvsp[-1].n);
-    }
-#line 1443 "semantic.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 29:
-#line 224 "semantic.y" /* yacc.c:1646  */
-    {
-      (yyval.n) = NULL;
-    }
-#line 1451 "semantic.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 35:
-#line 245 "semantic.y" /* yacc.c:1646  */
-    {
-      AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
-      node -> kind = RETURN;
-      node -> children_cnt = 1;
+      AST_NODE* node = build_node((yyvsp[-3].s), NO_TYPE, NO_KIND, 1);
       node -> children[0] = (yyvsp[-1].n);
       (yyval.n) = node;
     }
-#line 1463 "semantic.tab.c" /* yacc.c:1646  */
+#line 1466 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 29:
+#line 223 "semantic.y" /* yacc.c:1646  */
+    {
+      (yyval.n) = NULL;
+    }
+#line 1474 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 31:
+#line 231 "semantic.y" /* yacc.c:1646  */
+    {
+      (yyval.n) = (yyvsp[0].n);
+    }
+#line 1482 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 32:
+#line 235 "semantic.y" /* yacc.c:1646  */
+    {
+      AST_NODE* node = build_node("if", NO_TYPE, IF, 3);
+      node -> children[0] = (yyvsp[-2].n) -> children[0];
+      node -> children[1] = (yyvsp[-2].n) -> children[1];
+      node -> children[2] = (yyvsp[0].n);
+      (yyval.n) = node;
+    }
+#line 1494 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 33:
+#line 246 "semantic.y" /* yacc.c:1646  */
+    {
+      AST_NODE* node = build_node("if", NO_TYPE, IF, 2);
+      node -> children[0] = (yyvsp[-2].n);
+      node -> children[1] = (yyvsp[0].n);
+      (yyval.n) = node;
+    }
+#line 1505 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 34:
+#line 256 "semantic.y" /* yacc.c:1646  */
+    {
+      AST_NODE* node = build_node("", NO_TYPE, RELOP, 2);
+      node -> children[0] = (yyvsp[-2].n);
+      node -> children[1] = (yyvsp[0].n);
+      (yyval.n) = node;
+    }
+#line 1516 "semantic.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 35:
+#line 266 "semantic.y" /* yacc.c:1646  */
+    {
+      AST_NODE* node = build_node("return", NO_TYPE, RETURN, 1);
+      node -> children[0] = (yyvsp[-1].n);
+      (yyval.n) = node;
+    }
+#line 1526 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1467 "semantic.tab.c" /* yacc.c:1646  */
+#line 1530 "semantic.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1691,8 +1754,17 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 254 "semantic.y" /* yacc.c:1906  */
+#line 273 "semantic.y" /* yacc.c:1906  */
 
+
+AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children_cnt) {
+  AST_NODE* node = (AST_NODE*) malloc(sizeof(AST_NODE));
+  node -> name = name;
+  node -> type = type;
+  node -> kind = kind;
+  node -> children_cnt = children_cnt;
+  return node;
+}
 
 int yyerror(char *s) {
   fprintf(stderr, "\nline %d: ERROR: %s", yylineno, s);
