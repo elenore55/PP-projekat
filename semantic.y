@@ -14,7 +14,7 @@
   int error_count = 0;
   int warning_count = 0;
   int var_num = 0;
-  int fun_idx = -1;
+  int func_cnt = -1;
   int fcall_idx = -1;
 
   char* arops_str[] = { "+", "-", "*", "/" };
@@ -28,6 +28,7 @@
     unsigned kind;
     struct ast_node* children[256];
     int children_cnt;
+    int index;
   } AST_NODE;
 
   typedef struct display_node {
@@ -39,6 +40,10 @@
   AST_NODE* root;
   DISPLAY* build_display_node(AST_NODE* node, int depth);
   void print_tree(void);
+  void do_semantic_analysis(AST_NODE* node);
+  unsigned get_node_type(AST_NODE* node);
+  void assign(AST_NODE* node);
+  void arop_relop(AST_NODE* node);
 }
 
 %union {
@@ -83,8 +88,7 @@ function_list
   : function
   | function_list function
     {
-      // TODO: kind
-      AST_NODE* node = build_node("functions", NO_TYPE, NO_KIND, 2);
+      AST_NODE* node = build_node("functions", NO_TYPE, FUNCTIONS, 2);
       node -> children[0] = $1;
       node -> children[1] = $2;
       $$ = node;
@@ -130,8 +134,7 @@ variable_list
     }
   | variable_list variable
     {
-      // TODO: kind
-      AST_NODE* node = build_node("variables", NO_TYPE, NO_KIND, 2);
+      AST_NODE* node = build_node("variables", NO_TYPE, VARIABLES, 2);
       node -> children[0] = $1;
       node -> children[1] = $2;
       $$ = node;
@@ -141,7 +144,7 @@ variable_list
 variable
   : _TYPE _ID _SEMICOLON
     {
-      $$ = build_node($2, $1, VAR, 0);
+      $$ = build_node($2, $1, DECL, 0);
     }
   ;
 
@@ -152,8 +155,7 @@ statement_list
     }
   | statement_list statement
     {
-      // TODO: kind
-      AST_NODE* node = build_node("statements", NO_TYPE, NO_KIND, 2);
+      AST_NODE* node = build_node("statements", NO_TYPE, STATEMENTS, 2);
       node -> children[0] = $1;
       node -> children[1] = $2;
       $$ = node;
@@ -226,7 +228,7 @@ function_call
   : _ID _LPAREN argument _RPAREN
     {
       // TODO: kind, type
-      AST_NODE* node = build_node($1, NO_TYPE, NO_KIND, 1);
+      AST_NODE* node = build_node($1, NO_TYPE, FUN_CALL, 1);
       node -> children[0] = $3;
       $$ = node;
     }
@@ -292,6 +294,7 @@ AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children
   node -> type = type;
   node -> kind = kind;
   node -> children_cnt = children_cnt;
+  node -> index = -1;
   return node;
 }
 
@@ -313,6 +316,26 @@ void warning(char *s) {
   warning_count++;
 }
 
+// TODO: check this
+unsigned get_node_type(AST_NODE* node) {
+  if ((node -> type) != NO_TYPE)
+    return node -> type;
+  if ((node -> kind) & (VAR|PAR)) {
+    int i = lookup_symbol(node -> name, VAR|PAR);
+    if (i == NO_INDEX) err("Undeclared %s", node -> name);
+    else return get_type(i);
+  }
+  if (node -> children_cnt == 0) return NO_TYPE;
+  unsigned types[(node -> children_cnt) + 1];
+  unsigned first_type = get_node_type((node -> children)[0]);
+  for (int i = 1; i < node -> children_cnt; i++) {
+    unsigned next_type =get_node_type((node -> children)[i]); 
+    if (next_type != first_type) 
+      err("Mismatching types! %d and %d (%s)", first_type, next_type, node -> name);
+  }
+  return first_type;
+}
+
 void print_node(DISPLAY* display_node) {
   AST_NODE* node = display_node -> node;
   int depth = display_node -> depth;
@@ -330,6 +353,85 @@ void print_tree(void) {
   print_node(build_display_node(root, 0));
 }
 
+void declaration(AST_NODE* node) {
+  if(lookup_symbol(node -> name, VAR) != NO_INDEX) 
+    err("Variable %s redeclared!", node -> name);
+  int i = lookup_symbol(node -> name, VAR);
+  if (i != NO_INDEX && get_atr1(i) == func_cnt) 
+    err("Variable %s redeclared!", node -> name);
+  insert_symbol(node -> name, VAR, node -> type, func_cnt, NO_ATR);
+}
+
+void func_declaration(AST_NODE* node) {
+  if(lookup_symbol(node -> name, FUN) != NO_INDEX) 
+    err("Function %s redeclared!", node -> name);
+  AST_NODE* param = (node -> children)[0];
+  if (param == NULL) {
+    insert_symbol(node -> name, FUN, node -> type, 0, NO_ATR);
+  } else {
+    insert_symbol(node -> name, FUN, node -> type, 1, param -> type);
+    insert_symbol(param -> name, PAR, param -> type, ++func_cnt, NO_ATR);
+  }
+}
+
+void assign(AST_NODE* node) {
+  AST_NODE* left = (node -> children)[0];
+  AST_NODE* right = (node -> children)[1];
+  if (get_node_type(left) != get_node_type(right))
+    err("Mismatching types!");
+  if (!((left -> kind) & VAR|PAR))
+    err("Invalid left side of assignement! %d", left -> kind);
+}
+
+void arop_relop(AST_NODE* node) {
+  AST_NODE* left = (node -> children)[0];
+  AST_NODE* right = (node -> children)[1];
+  // printf("%s %d  %s %d\n", left -> name,  left -> type, right -> name, right -> type);
+  if (get_node_type(left) != get_node_type(right))
+    err("Mismatching types!");
+}
+
+void do_semantic_analysis(AST_NODE* node) {
+  if (node == NULL) return;
+  switch (node -> kind) {
+    case ASSIGN:
+    assign(node);
+    break;
+
+    case AROP:
+    case RELOP:
+    arop_relop(node);
+    break;
+
+    case DECL:
+    declaration(node);
+    break;
+
+    case FUN:
+    func_declaration(node);
+      // check if already declared
+      // add to symtable
+      // check return
+    break;
+
+    case LIT:
+      // add to symtable
+    break;
+
+    case VAR:
+    // check if declared
+    break;
+
+    case FUN_CALL:
+      // check if declared
+      // check args
+    break;
+  }
+  for (int i = 0; i < node -> children_cnt; i++) {
+    do_semantic_analysis((node -> children)[i]);
+  }
+}
+
 int main() {
   int synerr;
   init_symtab();
@@ -337,6 +439,7 @@ int main() {
   synerr = yyparse();
 
   print_tree();
+  do_semantic_analysis(root);
 
   clear_symtab();
   

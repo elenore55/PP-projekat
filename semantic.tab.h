@@ -48,6 +48,7 @@ extern int yydebug;
     unsigned kind;
     struct ast_node* children[256];
     int children_cnt;
+    int index;
   } AST_NODE;
 
   typedef struct display_node {
@@ -59,8 +60,12 @@ extern int yydebug;
   AST_NODE* root;
   DISPLAY* build_display_node(AST_NODE* node, int depth);
   void print_tree(void);
+  void do_semantic_analysis(AST_NODE* node);
+  unsigned get_node_type(AST_NODE* node);
+  void assign(AST_NODE* node);
+  void arop_relop(AST_NODE* node);
 
-#line 64 "semantic.tab.h" /* yacc.c:1909  */
+#line 69 "semantic.tab.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -91,13 +96,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 44 "semantic.y" /* yacc.c:1909  */
+#line 49 "semantic.y" /* yacc.c:1909  */
 
   int i;
   char *s;
   AST_NODE* n;
 
-#line 101 "semantic.tab.h" /* yacc.c:1909  */
+#line 106 "semantic.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
