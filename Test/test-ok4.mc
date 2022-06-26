@@ -3,7 +3,9 @@ int f1(int num) {
 }
 
 int f2() {
-	return 100 - 50 - 5 - 10;
+	int num;
+	num = 100 - 50 - 5 - 10;
+	return num;
 }
 
 int main() {
@@ -17,9 +19,9 @@ int main() {
 }
 
 int f3() {
-	int val1;
-	val1 = 55;
-	return val1 - 23 + 1 - 5;
+	int val;
+	val = 55;
+	return val - 23 + 5 - 1;
 }
 
 unsigned f4(unsigned val) {

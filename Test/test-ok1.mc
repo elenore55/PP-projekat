@@ -11,5 +11,6 @@ int main() {
 	int d;
 	int b;
 	d = fun1(5);
-	return 0;
+	b = d - 2;
+	return b;
 }

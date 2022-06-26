@@ -1805,7 +1805,6 @@ AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children
   node -> type = type;
   node -> kind = kind;
   node -> children_cnt = children_cnt;
-  // node -> func_ordinal = func_cnt;
   return node;
 }
 
@@ -1827,12 +1826,11 @@ void warning(char *s) {
   warning_count++;
 }
 
-// TODO: check this
 unsigned get_node_type(AST_NODE* node) {
   if ((node -> type) != NO_TYPE)
     return node -> type;
   if ((node -> kind) & (VAR|PAR)) {
-    int i = lookup_symbol(node -> name, VAR|PAR);
+    int i = lookup_symbol_in_func(node -> name, VAR|PAR, node -> func_ordinal);
     return get_type(i);
   }
   if ((node -> kind) & FUN_CALL) {
@@ -1937,7 +1935,6 @@ void arop_relop(AST_NODE* node) {
     err("Mismatching types!");
 }
 
-// TODO: ako nema return a treba
 void return_stm(AST_NODE* node) {
   int i = lookup_symbol(func_name, FUN);
   unsigned func_type = get_type(i);
