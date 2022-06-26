@@ -502,6 +502,13 @@ void first_pass(AST_NODE* node) {
 
 void do_semantic_analysis(AST_NODE* node) {
   if (node == NULL) return;
+  if (node -> kind == FUN) {
+    func_name = node -> name;
+    func_cnt = node -> func_ordinal;
+  }
+  for (int i = 0; i < node -> children_cnt; i++) {
+    do_semantic_analysis((node -> children)[i]);
+  }
   switch (node -> kind) {
     case ASSIGN:
     assign(node);
@@ -520,17 +527,9 @@ void do_semantic_analysis(AST_NODE* node) {
     func_call(node);
     break;
 
-    case FUN:
-    func_name = node -> name;
-    func_cnt = node -> func_ordinal;
-    break;
-
     case RETURN:
     return_stm(node);
     break;
-  }
-  for (int i = 0; i < node -> children_cnt; i++) {
-    do_semantic_analysis((node -> children)[i]);
   }
 }
 
