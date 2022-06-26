@@ -1,14 +1,11 @@
-// OPIS: Neodgovarajuci tip pri dodeli
+// OPIS: Neodgovarajuci tip povratne vrednosti
+
+int f() {
+    unsigned b;
+    b = 5u;
+    return b;
+}
 
 int main() {
-    int a;
-    int b;
-    int c;
-    unsigned d;
-    unsigned e;
-    a = 5;
-    b = 6;
-    c = 7u;
-    d = a;
-    e = 10;
+    return 0;
 }

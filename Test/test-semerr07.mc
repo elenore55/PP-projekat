@@ -1,13 +1,14 @@
-//OPIS: Neodgovarajuci tip operanada aritmetickih i relacionih operacija
+// OPIS: Neodgovarajuci tip pri dodeli
 
 int main() {
     int a;
     int b;
-    unsigned c;
-    a = 10;
-    b = 20;
-    c = 30u;
-    if (b >= c)
-        a = b + c;
-    return 0;
+    int c;
+    unsigned d;
+    unsigned e;
+    a = 5;
+    b = 6;
+    c = 7u;
+    d = a;
+    e = 10;
 }

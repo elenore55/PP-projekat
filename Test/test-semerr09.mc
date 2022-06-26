@@ -1,4 +1,4 @@
-// OPIS: Neodgovarajuci broj parametara
+// OPIS: Neodgovarajuci tip argumenta
 
 int f1(int a) {
     return a + 15;
@@ -9,9 +9,5 @@ unsigned f2() {
 }
 
 int main() {
-    int a;
-    unsigned b;
-    a = f1();
-    b = f2();
-    return a;
+    return f1(f2());
 }

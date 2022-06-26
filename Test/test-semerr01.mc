@@ -1,4 +1,4 @@
-//OPIS: Ne postoji main funkcija
+// OPIS: Ne postoji main funkcija
 
 int f() {
     int a;

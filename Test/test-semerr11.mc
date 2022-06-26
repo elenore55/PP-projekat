@@ -11,7 +11,7 @@ unsigned f2() {
 int main() {
     int a;
     unsigned b;
-    a = f1();
-    b = f2();
+    a = f1(a);
+    b = f2(a);
     return a;
 }

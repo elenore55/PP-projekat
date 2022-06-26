@@ -1,13 +1,13 @@
-// OPIS: neodgovarajuci tip argumenta
-
-int f1(int a) {
-    return a + 15;
-}
-
-unsigned f2() {
-    return 10u;
-}
+// OPIS: Neodgovarajuci tip operanada aritmetickih i relacionih operacija
 
 int main() {
-    return f1(f2());
+    int a;
+    int b;
+    unsigned c;
+    a = 10;
+    b = 20;
+    c = 30u;
+    if (b >= c)
+        a = b + c;
+    return 0;
 }

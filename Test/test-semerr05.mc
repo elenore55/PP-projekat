@@ -1,11 +1,11 @@
-// OPIS: Neodgovarajuci tip povratne vrednosti
+// OPIS: Nedeklarisana funkcija
 
 int f() {
-    unsigned b;
-    b = 5u;
-    return b;
+    int a;
+    a = 3;
+    return a;
 }
 
 int main() {
-    return 0;
+    return g();
 }
