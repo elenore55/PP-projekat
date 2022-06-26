@@ -1,3 +1,5 @@
+//OPIS: ponovljena promenljiva
+
 int f() {
     int a;
     int b;
