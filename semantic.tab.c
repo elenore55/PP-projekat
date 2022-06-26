@@ -498,8 +498,8 @@ static const yytype_uint16 yyrline[] =
 {
        0,    84,    84,    91,    92,   102,   114,   117,   124,   135,
      138,   158,   166,   169,   189,   190,   191,   192,   196,   203,
-     215,   216,   226,   227,   232,   233,   240,   244,   251,   262,
-     265,   269,   273,   284,   294,   304
+     214,   215,   225,   226,   230,   231,   238,   242,   249,   259,
+     262,   266,   270,   281,   291,   301
 };
 #endif
 
@@ -1445,88 +1445,85 @@ yyreduce:
 #line 204 "semantic.y" /* yacc.c:1646  */
     {
       AST_NODE* node = build_node("=", NO_TYPE, ASSIGN, 2);
-      // TODO: type
       AST_NODE* left = build_node((yyvsp[-3].s), NO_TYPE, VAR|PAR, 0);
       node -> children[0] = left;
       node -> children[1] = (yyvsp[-1].n);
       (yyval.n) = node;
     }
-#line 1455 "semantic.tab.c" /* yacc.c:1646  */
+#line 1454 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 217 "semantic.y" /* yacc.c:1646  */
+#line 216 "semantic.y" /* yacc.c:1646  */
     {
       AST_NODE* node = build_node(arops_str[(yyvsp[-1].i)], NO_TYPE, AROP, 2);
       node -> children[0] = (yyvsp[-2].n);
       node -> children[1] = (yyvsp[0].n);
       (yyval.n) = node;
     }
-#line 1466 "semantic.tab.c" /* yacc.c:1646  */
+#line 1465 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 23:
-#line 228 "semantic.y" /* yacc.c:1646  */
+#line 227 "semantic.y" /* yacc.c:1646  */
     {
-      // TODO: type
       (yyval.n) = build_node((yyvsp[0].s), NO_TYPE, VAR|PAR, 0);
     }
-#line 1475 "semantic.tab.c" /* yacc.c:1646  */
+#line 1473 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 25:
-#line 234 "semantic.y" /* yacc.c:1646  */
+#line 232 "semantic.y" /* yacc.c:1646  */
     {
       (yyval.n) = (yyvsp[-1].n);
     }
-#line 1483 "semantic.tab.c" /* yacc.c:1646  */
+#line 1481 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 26:
-#line 241 "semantic.y" /* yacc.c:1646  */
+#line 239 "semantic.y" /* yacc.c:1646  */
     {
       (yyval.n) = build_node((yyvsp[0].s), INT, LIT, 0);
     }
-#line 1491 "semantic.tab.c" /* yacc.c:1646  */
+#line 1489 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 27:
-#line 245 "semantic.y" /* yacc.c:1646  */
+#line 243 "semantic.y" /* yacc.c:1646  */
     {
       (yyval.n) = build_node((yyvsp[0].s), UINT, LIT, 0);
     }
-#line 1499 "semantic.tab.c" /* yacc.c:1646  */
+#line 1497 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 252 "semantic.y" /* yacc.c:1646  */
+#line 250 "semantic.y" /* yacc.c:1646  */
     {
-      // TODO: kind, type
       AST_NODE* node = build_node((yyvsp[-3].s), NO_TYPE, FUN_CALL, 1);
       node -> children[0] = (yyvsp[-1].n);
       (yyval.n) = node;
     }
-#line 1510 "semantic.tab.c" /* yacc.c:1646  */
+#line 1507 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 262 "semantic.y" /* yacc.c:1646  */
+#line 259 "semantic.y" /* yacc.c:1646  */
     {
       (yyval.n) = NULL;
     }
-#line 1518 "semantic.tab.c" /* yacc.c:1646  */
+#line 1515 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 31:
-#line 270 "semantic.y" /* yacc.c:1646  */
+#line 267 "semantic.y" /* yacc.c:1646  */
     {
       (yyval.n) = (yyvsp[0].n);
     }
-#line 1526 "semantic.tab.c" /* yacc.c:1646  */
+#line 1523 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 32:
-#line 274 "semantic.y" /* yacc.c:1646  */
+#line 271 "semantic.y" /* yacc.c:1646  */
     {
       AST_NODE* node = build_node("if", NO_TYPE, IF, 3);
       node -> children[0] = (yyvsp[-2].n) -> children[0];
@@ -1534,43 +1531,43 @@ yyreduce:
       node -> children[2] = (yyvsp[0].n);
       (yyval.n) = node;
     }
-#line 1538 "semantic.tab.c" /* yacc.c:1646  */
+#line 1535 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 33:
-#line 285 "semantic.y" /* yacc.c:1646  */
+#line 282 "semantic.y" /* yacc.c:1646  */
     {
       AST_NODE* node = build_node("if", NO_TYPE, IF, 2);
       node -> children[0] = (yyvsp[-2].n);
       node -> children[1] = (yyvsp[0].n);
       (yyval.n) = node;
     }
-#line 1549 "semantic.tab.c" /* yacc.c:1646  */
+#line 1546 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 295 "semantic.y" /* yacc.c:1646  */
+#line 292 "semantic.y" /* yacc.c:1646  */
     {
       AST_NODE* node = build_node(relops_str[(yyvsp[-1].i)], NO_TYPE, RELOP, 2);
       node -> children[0] = (yyvsp[-2].n);
       node -> children[1] = (yyvsp[0].n);
       (yyval.n) = node;
     }
-#line 1560 "semantic.tab.c" /* yacc.c:1646  */
+#line 1557 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 305 "semantic.y" /* yacc.c:1646  */
+#line 302 "semantic.y" /* yacc.c:1646  */
     {
       AST_NODE* node = build_node("return", NO_TYPE, RETURN, 1);
       node -> children[0] = (yyvsp[-1].n);
       (yyval.n) = node;
     }
-#line 1570 "semantic.tab.c" /* yacc.c:1646  */
+#line 1567 "semantic.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1574 "semantic.tab.c" /* yacc.c:1646  */
+#line 1571 "semantic.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1798,7 +1795,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 312 "semantic.y" /* yacc.c:1906  */
+#line 309 "semantic.y" /* yacc.c:1906  */
 
 
 AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children_cnt) {
@@ -1838,11 +1835,16 @@ unsigned get_node_type(AST_NODE* node) {
     if (i == NO_INDEX) err("Undeclared %s", node -> name);
     else return get_type(i);
   }
+  if ((node -> kind) & FUN_CALL) {
+    int i = lookup_symbol(node -> name, FUN);
+    unsigned func_type = get_type(i);
+    return func_type;
+  }
   if (node -> children_cnt == 0) return NO_TYPE;
   unsigned types[(node -> children_cnt) + 1];
   unsigned first_type = get_node_type((node -> children)[0]);
   for (int i = 1; i < node -> children_cnt; i++) {
-    unsigned next_type =get_node_type((node -> children)[i]); 
+    unsigned next_type = get_node_type((node -> children)[i]); 
     if (next_type != first_type) 
       err("Mismatching types! %d and %d (%s)", first_type, next_type, node -> name);
   }
@@ -1859,13 +1861,13 @@ void print_node(DISPLAY* display_node, int flags[]) {
   } 
 
   if (depth == 0) {
-    printf("\033[1;33m");
+    printf("\033[1;32m");
     printf("%s\n", node -> name);
     printf("\033[0m");
   }
   else if (display_node -> is_last) {
     printf("+--- ");
-    printf("\033[1;33m");
+    printf("\033[1;32m");
     printf("%s\n", node -> name);
     printf("\033[0m");
     flags[depth] = FALSE;
@@ -1873,7 +1875,7 @@ void print_node(DISPLAY* display_node, int flags[]) {
 
   else {
     printf("+--- ");
-    printf("\033[1;33m");
+    printf("\033[1;32m");
     printf("%s\n", node -> name);
     printf("\033[0m");
   }
@@ -1898,8 +1900,6 @@ void print_tree(void) {
 }
 
 void declaration(AST_NODE* node) {
-  if(lookup_symbol(node -> name, VAR) != NO_INDEX) 
-    err("Variable %s redeclared!", node -> name);
   int i = lookup_symbol(node -> name, VAR);
   if (i != NO_INDEX && get_atr1(i) == func_cnt) 
     err("Variable %s redeclared!", node -> name);
@@ -1924,7 +1924,7 @@ void assign(AST_NODE* node) {
   AST_NODE* left = (node -> children)[0];
   AST_NODE* right = (node -> children)[1];
   if (get_node_type(left) != get_node_type(right))
-    err("Mismatching types!");
+    err("Mismatching types in assign!  %s  %s", left -> name, right -> name);
   if (!((left -> kind) & VAR|PAR))
     err("Invalid left side of assignement! %d", left -> kind);
 }
@@ -1958,14 +1958,30 @@ void func_call(AST_NODE* node) {
   AST_NODE* arg = (node -> children)[0];
   int num_params = get_atr1(i);
   if (num_params == 1) {
-    if (arg == NULL) err("Mismatching number of arguments:!");
+    if (arg == NULL) err("Mismatching number of arguments!");
     unsigned param_type = get_atr2(i);
     unsigned arg_type = get_node_type(arg);
-    if (arg_type != get_type(i))
-      err("Mismatching arg types!");
+    if (arg_type != param_type)
+      err("Mismatching arg types! %d  %d", arg_type, param_type);
   }
   else if (arg != NULL)
     err("Mismatching number of arguments:!");
+}
+
+void first_pass(AST_NODE* node) {
+  if (node == NULL) return;
+  switch (node -> kind) {
+    case DECL:
+    declaration(node);
+    break;
+
+    case FUN:
+    func_declaration(node);
+    break;
+  }
+  for (int i = 0; i < node -> children_cnt; i++) {
+    first_pass((node -> children)[i]);
+  }
 }
 
 void do_semantic_analysis(AST_NODE* node) {
@@ -1980,20 +1996,16 @@ void do_semantic_analysis(AST_NODE* node) {
     arop_relop(node);
     break;
 
-    case DECL:
-    declaration(node);
-    break;
-
-    case FUN:
-    func_declaration(node);
-    break;
-
     case VAR:
     variable(node);
     break;
 
     case FUN_CALL:
     func_call(node);
+    break;
+
+    case FUN:
+    func_name = node -> name;
     break;
 
     case RETURN:
@@ -2012,9 +2024,10 @@ int main() {
   synerr = yyparse();
 
   print_tree();
+  first_pass(root);
   do_semantic_analysis(root);
   if (!main_found)
-    err("No main fuction!");
+    err("No main function!");
 
   clear_symtab();
   

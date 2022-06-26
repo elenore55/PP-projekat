@@ -203,7 +203,6 @@ assignment_statement
   : _ID _ASSIGN num_exp _SEMICOLON
     {
       AST_NODE* node = build_node("=", NO_TYPE, ASSIGN, 2);
-      // TODO: type
       AST_NODE* left = build_node($1, NO_TYPE, VAR|PAR, 0);
       node -> children[0] = left;
       node -> children[1] = $3;
@@ -226,7 +225,6 @@ exp
   : literal
   | _ID
     {
-      // TODO: type
       $$ = build_node($1, NO_TYPE, VAR|PAR, 0);
     }
   | function_call
@@ -250,7 +248,6 @@ literal
 function_call
   : _ID _LPAREN argument _RPAREN
     {
-      // TODO: kind, type
       AST_NODE* node = build_node($1, NO_TYPE, FUN_CALL, 1);
       node -> children[0] = $3;
       $$ = node;
@@ -348,11 +345,16 @@ unsigned get_node_type(AST_NODE* node) {
     if (i == NO_INDEX) err("Undeclared %s", node -> name);
     else return get_type(i);
   }
+  if ((node -> kind) & FUN_CALL) {
+    int i = lookup_symbol(node -> name, FUN);
+    unsigned func_type = get_type(i);
+    return func_type;
+  }
   if (node -> children_cnt == 0) return NO_TYPE;
   unsigned types[(node -> children_cnt) + 1];
   unsigned first_type = get_node_type((node -> children)[0]);
   for (int i = 1; i < node -> children_cnt; i++) {
-    unsigned next_type =get_node_type((node -> children)[i]); 
+    unsigned next_type = get_node_type((node -> children)[i]); 
     if (next_type != first_type) 
       err("Mismatching types! %d and %d (%s)", first_type, next_type, node -> name);
   }
@@ -369,13 +371,13 @@ void print_node(DISPLAY* display_node, int flags[]) {
   } 
 
   if (depth == 0) {
-    printf("\033[1;33m");
+    printf("\033[1;32m");
     printf("%s\n", node -> name);
     printf("\033[0m");
   }
   else if (display_node -> is_last) {
     printf("+--- ");
-    printf("\033[1;33m");
+    printf("\033[1;32m");
     printf("%s\n", node -> name);
     printf("\033[0m");
     flags[depth] = FALSE;
@@ -383,7 +385,7 @@ void print_node(DISPLAY* display_node, int flags[]) {
 
   else {
     printf("+--- ");
-    printf("\033[1;33m");
+    printf("\033[1;32m");
     printf("%s\n", node -> name);
     printf("\033[0m");
   }
@@ -408,8 +410,6 @@ void print_tree(void) {
 }
 
 void declaration(AST_NODE* node) {
-  if(lookup_symbol(node -> name, VAR) != NO_INDEX) 
-    err("Variable %s redeclared!", node -> name);
   int i = lookup_symbol(node -> name, VAR);
   if (i != NO_INDEX && get_atr1(i) == func_cnt) 
     err("Variable %s redeclared!", node -> name);
@@ -434,7 +434,7 @@ void assign(AST_NODE* node) {
   AST_NODE* left = (node -> children)[0];
   AST_NODE* right = (node -> children)[1];
   if (get_node_type(left) != get_node_type(right))
-    err("Mismatching types!");
+    err("Mismatching types in assign!  %s  %s", left -> name, right -> name);
   if (!((left -> kind) & VAR|PAR))
     err("Invalid left side of assignement! %d", left -> kind);
 }
@@ -468,14 +468,30 @@ void func_call(AST_NODE* node) {
   AST_NODE* arg = (node -> children)[0];
   int num_params = get_atr1(i);
   if (num_params == 1) {
-    if (arg == NULL) err("Mismatching number of arguments:!");
+    if (arg == NULL) err("Mismatching number of arguments!");
     unsigned param_type = get_atr2(i);
     unsigned arg_type = get_node_type(arg);
-    if (arg_type != get_type(i))
-      err("Mismatching arg types!");
+    if (arg_type != param_type)
+      err("Mismatching arg types! %d  %d", arg_type, param_type);
   }
   else if (arg != NULL)
     err("Mismatching number of arguments:!");
+}
+
+void first_pass(AST_NODE* node) {
+  if (node == NULL) return;
+  switch (node -> kind) {
+    case DECL:
+    declaration(node);
+    break;
+
+    case FUN:
+    func_declaration(node);
+    break;
+  }
+  for (int i = 0; i < node -> children_cnt; i++) {
+    first_pass((node -> children)[i]);
+  }
 }
 
 void do_semantic_analysis(AST_NODE* node) {
@@ -490,20 +506,16 @@ void do_semantic_analysis(AST_NODE* node) {
     arop_relop(node);
     break;
 
-    case DECL:
-    declaration(node);
-    break;
-
-    case FUN:
-    func_declaration(node);
-    break;
-
     case VAR:
     variable(node);
     break;
 
     case FUN_CALL:
     func_call(node);
+    break;
+
+    case FUN:
+    func_name = node -> name;
     break;
 
     case RETURN:
@@ -522,9 +534,10 @@ int main() {
   synerr = yyparse();
 
   print_tree();
+  first_pass(root);
   do_semantic_analysis(root);
   if (!main_found)
-    err("No main fuction!");
+    err("No main function!");
 
   clear_symtab();
   
