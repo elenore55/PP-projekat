@@ -7,6 +7,12 @@ int abs(int a) {
 	return b;
 }
 
+int main() {
+	unsigned d;
+	d = fun1(5);
+	return 0;
+}
+
 unsigned fun1(int a) {
 	int b;
 	int c;
@@ -14,10 +20,4 @@ unsigned fun1(int a) {
 	if (b > 3) 
 		c = a - 5;
 	return 3u;
-}
-
-int main() {
-	unsigned d;
-	d = fun1(5);
-	return 0;
 }

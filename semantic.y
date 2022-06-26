@@ -30,7 +30,7 @@
     unsigned kind;
     struct ast_node* children[256];
     int children_cnt;
-    int index;
+    int func_ordinal;
   } AST_NODE;
 
   typedef struct display_node {
@@ -105,6 +105,7 @@ function
       node -> children[0] = $4;
       node -> children[1] = $6 -> children[0];
       node -> children[2] = $6 -> children[1];
+      node -> func_ordinal = ++func_cnt;
       $$ = node;
     }
   ;
@@ -314,7 +315,6 @@ AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children
   node -> type = type;
   node -> kind = kind;
   node -> children_cnt = children_cnt;
-  node -> index = -1;
   return node;
 }
 
@@ -343,6 +343,7 @@ unsigned get_node_type(AST_NODE* node) {
   if ((node -> kind) & (VAR|PAR)) {
     int i = lookup_symbol(node -> name, VAR|PAR);
     if (i == NO_INDEX) err("Undeclared %s", node -> name);
+    // if (get_atr1(i) != func_cnt) err("Undeclared %s", node -> name);
     else return get_type(i);
   }
   if ((node -> kind) & FUN_CALL) {
@@ -457,7 +458,12 @@ void return_stm(AST_NODE* node) {
 }
 
 void variable(AST_NODE* node) {
-  if (lookup_symbol(node -> name, VAR|PAR) == NO_INDEX)
+  int i = lookup_symbol(node -> name, VAR|PAR);
+  if (i == NO_INDEX)
+    err("Variable %s not declared!", node -> name);
+  printf("%d  %d", get_atr1(i), func_cnt);
+  printf("aaaaaaa");
+  if (get_atr1(i) != func_cnt)
     err("Variable %s not declared!", node -> name);
 }
 
@@ -516,6 +522,7 @@ void do_semantic_analysis(AST_NODE* node) {
 
     case FUN:
     func_name = node -> name;
+    func_cnt = node -> func_ordinal;
     break;
 
     case RETURN:
@@ -532,7 +539,7 @@ int main() {
   init_symtab();
 
   synerr = yyparse();
-
+  func_cnt = -1;
   print_tree();
   first_pass(root);
   do_semantic_analysis(root);
