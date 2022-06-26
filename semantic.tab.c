@@ -1858,16 +1858,24 @@ void print_node(DISPLAY* display_node, int flags[]) {
     else printf("     ");
   } 
 
-  if (depth == 0)
+  if (depth == 0) {
+    printf("\033[1;33m");
     printf("%s\n", node -> name);
-
+    printf("\033[0m");
+  }
   else if (display_node -> is_last) {
-    printf("+--- %s\n", node -> name);
+    printf("+--- ");
+    printf("\033[1;33m");
+    printf("%s\n", node -> name);
+    printf("\033[0m");
     flags[depth] = FALSE;
   }
 
   else {
-    printf("+--- %s\n", node -> name);
+    printf("+--- ");
+    printf("\033[1;33m");
+    printf("%s\n", node -> name);
+    printf("\033[0m");
   }
 
   for (int i = 0; i < node -> children_cnt; i++)
