@@ -54,6 +54,7 @@ extern int yydebug;
   typedef struct display_node {
     AST_NODE* node;
     int depth;
+    int is_last;
   } DISPLAY;
 
   AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children_cnt);
@@ -65,7 +66,7 @@ extern int yydebug;
   void assign(AST_NODE* node);
   void arop_relop(AST_NODE* node);
 
-#line 69 "semantic.tab.h" /* yacc.c:1909  */
+#line 70 "semantic.tab.h" /* yacc.c:1909  */
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -96,13 +97,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 51 "semantic.y" /* yacc.c:1909  */
+#line 52 "semantic.y" /* yacc.c:1909  */
 
   int i;
   char *s;
   AST_NODE* n;
 
-#line 106 "semantic.tab.h" /* yacc.c:1909  */
+#line 107 "semantic.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

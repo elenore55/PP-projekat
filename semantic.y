@@ -36,6 +36,7 @@
   typedef struct display_node {
     AST_NODE* node;
     int depth;
+    int is_last;
   } DISPLAY;
 
   AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children_cnt);
@@ -358,21 +359,44 @@ unsigned get_node_type(AST_NODE* node) {
   return first_type;
 }
 
-void print_node(DISPLAY* display_node) {
+void print_node(DISPLAY* display_node, int flags[], int depth) {
   AST_NODE* node = display_node -> node;
-  int depth = display_node -> depth;
+  // int depth = display_node -> depth;
   if (node == NULL) return;
-  for (int i = 0; i < depth; i++) printf(" ");
-  printf("%s\n", node -> name);
+  for (int i = 1; i < depth; i++) {
+    if (flags[i] == TRUE) printf("|    ");
+    else printf("     ");
+  } 
+
+  if (depth == 0)
+    printf("%s\n", node -> name);
+
+  else if (display_node -> is_last) {
+    printf("+--- %s\n", node -> name);
+    flags[depth] = FALSE;
+  }
+
+  else {
+    printf("+--- %s\n", node -> name);
+  }
+
   for (int i = 0; i < node -> children_cnt; i++)
   {
     AST_NODE* next = ((node -> children)[i]);
-    print_node(build_display_node(next, depth + 1));
+    DISPLAY* next_display = build_display_node(next, depth + 1);
+    if (i == (node -> children_cnt) - 1) next_display -> is_last = TRUE;
+    else next_display -> is_last = FALSE;
+    print_node(next_display, flags, depth + 1);
   }
+  flags[depth] = TRUE;
 }
 
 void print_tree(void) {
-  print_node(build_display_node(root, 0));
+  DISPLAY* display_node = build_display_node(root, 0);
+  display_node -> is_last = TRUE; 
+  int flags[256];
+  for (int i = 0; i < 100; i++) flags[i] = TRUE;
+  print_node(display_node, flags, 0);
 }
 
 void declaration(AST_NODE* node) {
