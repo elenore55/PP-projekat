@@ -30,7 +30,7 @@
     unsigned kind;
     struct ast_node* children[256];
     int children_cnt;
-    int func_ordinal;
+    unsigned func_ordinal;
   } AST_NODE;
 
   typedef struct display_node {
@@ -315,6 +315,7 @@ AST_NODE* build_node(char* name, unsigned type, unsigned kind, unsigned children
   node -> type = type;
   node -> kind = kind;
   node -> children_cnt = children_cnt;
+  // node -> func_ordinal = func_cnt;
   return node;
 }
 
@@ -342,9 +343,7 @@ unsigned get_node_type(AST_NODE* node) {
     return node -> type;
   if ((node -> kind) & (VAR|PAR)) {
     int i = lookup_symbol(node -> name, VAR|PAR);
-    if (i == NO_INDEX) err("Undeclared %s", node -> name);
-    // if (get_atr1(i) != func_cnt) err("Undeclared %s", node -> name);
-    else return get_type(i);
+    return get_type(i);
   }
   if ((node -> kind) & FUN_CALL) {
     int i = lookup_symbol(node -> name, FUN);
@@ -411,10 +410,10 @@ void print_tree(void) {
 }
 
 void declaration(AST_NODE* node) {
-  int i = lookup_symbol(node -> name, VAR);
-  if (i != NO_INDEX && get_atr1(i) == func_cnt) 
+  int i = lookup_symbol_in_func(node -> name, VAR, node -> func_ordinal);
+  if (i != NO_INDEX) 
     err("Variable %s redeclared!", node -> name);
-  insert_symbol(node -> name, VAR, node -> type, func_cnt, NO_ATR);
+  insert_symbol(node -> name, VAR, node -> type, node -> func_ordinal, NO_ATR);
 }
 
 void func_declaration(AST_NODE* node) {
@@ -427,7 +426,7 @@ void func_declaration(AST_NODE* node) {
     insert_symbol(node -> name, FUN, node -> type, 0, NO_ATR);
   } else {
     insert_symbol(node -> name, FUN, node -> type, 1, param -> type);
-    insert_symbol(param -> name, PAR, param -> type, ++func_cnt, NO_ATR);
+    insert_symbol(param -> name, PAR, param -> type, param -> func_ordinal, NO_ATR);
   }
 }
 
@@ -458,12 +457,8 @@ void return_stm(AST_NODE* node) {
 }
 
 void variable(AST_NODE* node) {
-  int i = lookup_symbol(node -> name, VAR|PAR);
+  int i = lookup_symbol_in_func(node -> name, VAR|PAR, node -> func_ordinal);
   if (i == NO_INDEX)
-    err("Variable %s not declared!", node -> name);
-  printf("%d  %d", get_atr1(i), func_cnt);
-  printf("aaaaaaa");
-  if (get_atr1(i) != func_cnt)
     err("Variable %s not declared!", node -> name);
 }
 
@@ -533,14 +528,24 @@ void do_semantic_analysis(AST_NODE* node) {
   }
 }
 
+void set_ordinals(AST_NODE* node, unsigned ordinal) {
+  if (node == NULL) return;
+  if ((node -> kind) != FUN)
+    node -> func_ordinal = ordinal;
+  for (int i = 0; i < (node -> children_cnt); i++)
+    set_ordinals((node -> children)[i], node -> func_ordinal);
+}
+
 int main() {
   int synerr;
   init_symtab();
 
   synerr = yyparse();
   func_cnt = -1;
+  set_ordinals(root, -1);
   print_tree();
   first_pass(root);
+  // print_symtab();
   do_semantic_analysis(root);
   if (!main_found)
     err("No main function!");

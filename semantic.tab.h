@@ -48,7 +48,7 @@ extern int yydebug;
     unsigned kind;
     struct ast_node* children[256];
     int children_cnt;
-    int func_ordinal;
+    unsigned func_ordinal;
   } AST_NODE;
 
   typedef struct display_node {

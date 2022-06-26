@@ -28,6 +28,8 @@ int insert_literal(char *str, unsigned type);
 // Vraca indeks pronadjenog simbola ili vraca -1.
 int lookup_symbol(char *name, unsigned kind);
 
+int lookup_symbol_in_func(char *name, unsigned kind, unsigned func_index);
+
 // set i get metode za polja tabele simbola
 void     set_name(int index, char *name);
 char*    get_name(int index);

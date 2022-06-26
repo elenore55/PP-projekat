@@ -9,7 +9,7 @@ int fun1(int a) {
 
 int main() {
 	int d;
-	// int b;
+	int b;
 	d = fun1(5);
 	return 0;
 }
