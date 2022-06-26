@@ -1956,11 +1956,14 @@ void func_call(AST_NODE* node) {
   AST_NODE* arg = (node -> children)[0];
   int num_params = get_atr1(i);
   if (num_params == 1) {
-    if (arg == NULL) err("Mismatching number of arguments!");
-    unsigned param_type = get_atr2(i);
-    unsigned arg_type = get_node_type(arg);
-    if (arg_type != param_type)
-      err("Mismatching arg types! %d  %d", arg_type, param_type);
+    if (arg == NULL) 
+      err("Mismatching number of arguments!");
+    else {
+      unsigned param_type = get_atr2(i);
+      unsigned arg_type = get_node_type(arg);
+      if (arg_type != param_type)
+        err("Mismatching arg types! %d  %d", arg_type, param_type);
+    }
   }
   else if (arg != NULL)
     err("Mismatching number of arguments:!");

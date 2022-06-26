@@ -13,7 +13,7 @@ int main() {
 	int b;
 	int c;
 	a = f3();
-	b = f1(a);
+	b = f1(a + 10);
 	c = f2();
 	return a + b - c;
 }
