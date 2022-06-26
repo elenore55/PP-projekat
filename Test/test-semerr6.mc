@@ -1,3 +1,5 @@
+// OPIS: Neodgovarajuci tip pri dodeli
+
 int main() {
     int a;
     int b;

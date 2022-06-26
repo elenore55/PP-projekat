@@ -1,3 +1,5 @@
+// OPIS: Redeklaracija promenljive
+
 int f() {
     int a;
     int b;

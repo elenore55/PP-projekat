@@ -1,3 +1,5 @@
+// OPIS: Neodgovarajuci tip povratne vrednosti
+
 int f() {
     unsigned b;
     b = 5u;

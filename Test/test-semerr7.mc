@@ -1,3 +1,5 @@
+//OPIS: Neodgovarajuci tip operanada aritmetickih i relacionih operacija
+
 int main() {
     int a;
     int b;

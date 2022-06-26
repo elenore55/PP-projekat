@@ -1,3 +1,5 @@
+// OPIS: Nedeklarisana promenljiva
+
 int f(int c) {
     int b;
     b = 35 + c;

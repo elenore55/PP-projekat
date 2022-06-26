@@ -1,3 +1,5 @@
+// OPIS: Redeklaracija funkcije
+
 int f() {
     return 1;
 }
