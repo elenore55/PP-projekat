@@ -1849,9 +1849,9 @@ unsigned get_node_type(AST_NODE* node) {
   return first_type;
 }
 
-void print_node(DISPLAY* display_node, int flags[], int depth) {
+void print_node(DISPLAY* display_node, int flags[]) {
   AST_NODE* node = display_node -> node;
-  // int depth = display_node -> depth;
+  int depth = display_node -> depth;
   if (node == NULL) return;
   for (int i = 1; i < depth; i++) {
     if (flags[i] == TRUE) printf("|    ");
@@ -1876,7 +1876,7 @@ void print_node(DISPLAY* display_node, int flags[], int depth) {
     DISPLAY* next_display = build_display_node(next, depth + 1);
     if (i == (node -> children_cnt) - 1) next_display -> is_last = TRUE;
     else next_display -> is_last = FALSE;
-    print_node(next_display, flags, depth + 1);
+    print_node(next_display, flags);
   }
   flags[depth] = TRUE;
 }
@@ -1886,7 +1886,7 @@ void print_tree(void) {
   display_node -> is_last = TRUE; 
   int flags[256];
   for (int i = 0; i < 100; i++) flags[i] = TRUE;
-  print_node(display_node, flags, 0);
+  print_node(display_node, flags);
 }
 
 void declaration(AST_NODE* node) {
