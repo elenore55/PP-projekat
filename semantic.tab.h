@@ -61,7 +61,7 @@ extern int yydebug;
   AST_NODE* root;
   DISPLAY* build_display_node(AST_NODE* node, int depth);
   void print_tree(void);
-  void do_semantic_analysis(AST_NODE* node);
+  void second_pass(AST_NODE* node);
   unsigned get_node_type(AST_NODE* node);
   void assign(AST_NODE* node);
   void arop_relop(AST_NODE* node);

@@ -138,7 +138,7 @@ extern int yydebug;
   AST_NODE* root;
   DISPLAY* build_display_node(AST_NODE* node, int depth);
   void print_tree(void);
-  void do_semantic_analysis(AST_NODE* node);
+  void second_pass(AST_NODE* node);
   unsigned get_node_type(AST_NODE* node);
   void assign(AST_NODE* node);
   void arop_relop(AST_NODE* node);
@@ -1844,7 +1844,7 @@ unsigned get_node_type(AST_NODE* node) {
   for (int i = 1; i < node -> children_cnt; i++) {
     unsigned next_type = get_node_type((node -> children)[i]); 
     if (next_type != first_type) 
-      err("Mismatching types! %d and %d (%s)", first_type, next_type, node -> name);
+      err("Mismatching types!");
   }
   return first_type;
 }
@@ -1870,14 +1870,12 @@ void print_node(DISPLAY* display_node, int flags[]) {
     printf("\033[0m");
     flags[depth] = FALSE;
   }
-
   else {
     printf("+--- ");
     printf("\033[1;32m");
     printf("%s\n", node -> name);
     printf("\033[0m");
   }
-
   for (int i = 0; i < node -> children_cnt; i++)
   {
     AST_NODE* next = ((node -> children)[i]);
@@ -1922,15 +1920,14 @@ void assign(AST_NODE* node) {
   AST_NODE* left = (node -> children)[0];
   AST_NODE* right = (node -> children)[1];
   if (get_node_type(left) != get_node_type(right))
-    err("Mismatching types in assign!  %s  %s", left -> name, right -> name);
+    err("Mismatching types in assignment!");
   if (!((left -> kind) & VAR|PAR))
-    err("Invalid left side of assignement! %d", left -> kind);
+    err("Invalid left side of assignement!");
 }
 
 void arop_relop(AST_NODE* node) {
   AST_NODE* left = (node -> children)[0];
   AST_NODE* right = (node -> children)[1];
-  // printf("%s %d  %s %d\n", left -> name,  left -> type, right -> name, right -> type);
   if (get_node_type(left) != get_node_type(right))
     err("Mismatching types!");
 }
@@ -1957,16 +1954,16 @@ void func_call(AST_NODE* node) {
   int num_params = get_atr1(i);
   if (num_params == 1) {
     if (arg == NULL) 
-      err("Mismatching number of arguments!");
+      err("Mismatching number of arguments for function %s!", node -> name);
     else {
       unsigned param_type = get_atr2(i);
       unsigned arg_type = get_node_type(arg);
       if (arg_type != param_type)
-        err("Mismatching arg types! %d  %d", arg_type, param_type);
+        err("Mismatching arg types for function %s!", node -> name);
     }
   }
   else if (arg != NULL)
-    err("Mismatching number of arguments:!");
+    err("Mismatching number of arguments for function %s!", node -> name);
 }
 
 void first_pass(AST_NODE* node) {
@@ -1985,14 +1982,14 @@ void first_pass(AST_NODE* node) {
   }
 }
 
-void do_semantic_analysis(AST_NODE* node) {
+void second_pass(AST_NODE* node) {
   if (node == NULL) return;
   if (node -> kind == FUN) {
     func_name = node -> name;
     func_cnt = node -> func_ordinal;
   }
   for (int i = 0; i < node -> children_cnt; i++) {
-    do_semantic_analysis((node -> children)[i]);
+    second_pass((node -> children)[i]);
   }
   switch (node -> kind) {
     case ASSIGN:
@@ -2035,10 +2032,9 @@ int main() {
   set_ordinals(root, -1);
   print_tree();
   first_pass(root);
-  // print_symtab();
-  do_semantic_analysis(root);
+  second_pass(root);
   if (!main_found)
-    err("No main function!");
+    err("Program has no main function!");
 
   clear_symtab();
   
